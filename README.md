@@ -1,4 +1,4 @@
-# 🎙️ TTS Synthetic Data Generation using Gemini
+# TTS Synthetic Data Generation using Gemini
 
 This repository contains a **Jupyter Notebook** that generates **synthetic speech data** using **Google Gemini Text-to-Speech (TTS)**. It is designed to automatically create large-scale, structured datasets suitable for **training or fine-tuning TTS models** (e.g., Parler-TTS, VITS, etc.).
 
