@@ -1,0 +1,4 @@
+google-genai
+ipykernel
+notebook
+python-dotenv

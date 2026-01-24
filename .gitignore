@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# Output data
+output/
+data/teacher_dataset_large_updated/
+
+# Environment variables
+.env
+
+# OS
+.DS_Store
