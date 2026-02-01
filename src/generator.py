@@ -7,7 +7,6 @@ from typing import List, Dict, Optional
 from google import genai
 from google.genai import types
 
-# Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -79,15 +78,10 @@ class TTSSyntheticDataGenerator:
                 )
                 generated_text = response.text.strip()
                 
-                # Generate audio using Gemini TTS
-                # Note: This requires the Gemini TTS capability which might be in specific models or versions
-                # The original notebook used a specific flow. We'll follow the pattern.
                 
                 filename = f"sample_{int(time.time() * 1000)}.wav"
                 filepath = os.path.join(self.voice_dir, filename)
                 
-                # In the original notebook, the user was likely using a specific TTS feature
-                # We'll keep the structure ready for it.
                 
                 metadata = {
                     "audio_file": f"audio/{filename}",
@@ -129,7 +123,6 @@ if __name__ == "__main__":
         print("Usage: python generator.py <api_key1> <api_key2> ...")
     else:
         keys = sys.argv[1:]
-        # Load topics from data directory
         data_path = os.path.join(os.path.dirname(__file__), "..", "data", "topics.json")
         with open(data_path, "r") as f:
             topics = json.load(f)
