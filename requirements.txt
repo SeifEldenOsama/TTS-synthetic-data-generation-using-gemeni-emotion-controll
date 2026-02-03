@@ -1,4 +1,10 @@
 google-genai
+torch
+librosa
+transformers
+numpy
+pathlib
+soundfile
 ipykernel
 notebook
 python-dotenv
