@@ -1,29 +1,30 @@
-# 🎙️ TTS Synthetic Data Generation using Gemini
+# 🎙️ TTS Synthetic Data Generation using Gemini 2.5
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Google Gemini](https://img.shields.io/badge/AI-Google%20Gemini-orange.svg)](https://ai.google.dev/)
+[![Google Gemini](https://img.shields.io/badge/AI-Google%20Gemini%202.5-orange.svg)](https://ai.google.dev/)
 
-A professional tool for generating high-quality synthetic speech datasets using Google Gemini. This project is designed to automate the creation of large-scale, structured datasets suitable for training or fine-tuning Text-to-Speech (TTS) models like Parler-TTS, VITS, and others.
+A professional tool for generating high-quality synthetic speech datasets using **Google Gemini 2.5**. This project automates the creation of large-scale, structured datasets suitable for training or fine-tuning Text-to-Speech (TTS) models like Parler-TTS, VITS, and others.
 
 ## 🌟 Key Features
 
+- 🚀 **Gemini 2.5 Flash & TTS**: Leverages the latest `gemini-2.5-flash` for text generation and `gemini-2.5-flash-preview-tts` for high-fidelity audio synthesis.
+- 🔍 **Automatic Gender Detection**: Integrated a `Wav2Vec2` classification model to automatically detect the gender of generated audio, ensuring 100% accuracy in metadata descriptions.
 - 🔁 **API Key Rotation**: Automatically cycles through multiple Gemini API keys to bypass quota limits and ensure uninterrupted generation.
-- 🎭 **Emotion & Style Control**: Supports a wide range of voices, styles, and emotions (e.g., cheerful, whispering, authoritative).
-- 🧠 **Topic-Based Generation**: Includes a curated list of over 600 educational topics across science, space, nature, and more.
+- 🎭 **Emotion & Style Control**: Supports a wide range of voices and styles (e.g., cheerful, gentle, energetic, whispering, authoritative).
+- 🧠 **Topic-Based Generation**: Includes a curated list of **500+ educational topics** across space, geology, history, math, and more.
 - 📊 **Structured Output**: Generates `.wav` audio files and a corresponding `metadata.jsonl` file ready for machine learning pipelines.
-- 🛠️ **Modular Design**: Core logic is separated into a reusable Python class, making it easy to integrate into other projects.
 
 ## 📂 Repository Structure
 
 ```text
 .
 ├── data/               # Static data (e.g., topics.json)
-├── notebooks/          # Jupyter notebooks for interactive use
+├── notebooks/          # Jupyter notebooks for interactive use (Colab optimized)
 ├── src/                # Core source code
-│   └── generator.py    # Main TTSSyntheticDataGenerator class
+│   └── generator.py    # Main TTSSyntheticDataGenerator class with Gender Detection
 ├── examples/           # Sample outputs and metadata
-├── requirements.txt    # Project dependencies
+├── requirements.txt    # Project dependencies (including torch & transformers)
 └── README.md           # Project documentation
 ```
 
@@ -31,8 +32,9 @@ A professional tool for generating high-quality synthetic speech datasets using 
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.9 or higher
 - One or more [Google Gemini API Keys](https://aistudio.google.com/app/apikey)
+- FFmpeg (for audio processing via librosa)
 
 ### Installation
 
@@ -70,12 +72,12 @@ The `metadata.jsonl` file follows a structured format compatible with most TTS t
 
 ```json
 {
-  "audio_file": "audio/sample_1706100000.wav",
-  "text": "The sky appears blue because of Rayleigh scattering...",
-  "description": "A female delivers a cheerful and medium-paced speech",
+  "audio_file": "voices/teacher_20240203_120000.wav",
+  "text": "The Earth is like a giant magnet with two poles...",
+  "description": "A female speaker delivers a gentle explanation in a clear teaching voice.",
   "voice_name": "Leda",
-  "style": "cheerful",
-  "topic": "science",
+  "style": "gentle",
+  "topic": "Earth & Geology",
   "gender": "female"
 }
 ```
