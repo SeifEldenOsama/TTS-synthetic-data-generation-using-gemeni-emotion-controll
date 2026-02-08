@@ -85,11 +85,3 @@ The `metadata.jsonl` file follows a structured format compatible with most TTS t
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request or open an issue for any bugs or feature requests.
-
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-Developed with ❤️ by [Seif Elden Osama](https://github.com/SeifEldenOsama)
