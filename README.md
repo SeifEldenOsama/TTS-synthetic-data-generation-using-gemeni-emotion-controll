@@ -9,20 +9,20 @@ A professional tool for generating high-quality synthetic speech datasets using 
 ## 🌟 Key Features
 
 - 🚀 **Gemini 2.5 Flash & TTS**: Leverages the latest `gemini-2.5-flash` for text generation and `gemini-2.5-flash-preview-tts` for high-fidelity audio synthesis.
-- 🔍 **Automatic Gender Detection**: Integrated a `Wav2Vec2` classification model to automatically detect the gender of generated audio, ensuring 100% accuracy in metadata descriptions.
+- 🔍 **Strict Voice Mapping & Clarity Check**: Uses a predefined mapping for voice genders (Puck, Charon, Zephyr, etc.) and includes a `Wav2Vec2` classification model for clarity verification.
 - 🔁 **API Key Rotation**: Automatically cycles through multiple Gemini API keys to bypass quota limits and ensure uninterrupted generation.
-- 🎭 **Emotion & Style Control**: Supports a wide range of voices and styles (e.g., cheerful, gentle, energetic, whispering, authoritative).
-- 🧠 **Topic-Based Generation**: Includes a curated list of **500+ educational topics** across space, geology, history, math, and more.
+- 🎭 **Expanded Emotion & Style Control**: Supports a wide range of styles including `slow`, `cry`, `anxious`, `kind`, `laugh`, `bright`, `commanding`, `mellow`, and `animated`.
+- 🧠 **Massive Topic-Based Generation**: Includes an expanded list of **1,000+ educational topics** across space, cosmos, everyday mysteries, music, art, and more.
 - 📊 **Structured Output**: Generates `.wav` audio files and a corresponding `metadata.jsonl` file ready for machine learning pipelines.
 
 ## 📂 Repository Structure
 
 ```text
 .
-├── data/               # Static data (e.g., topics.json)
+├── data/               # Static data (e.g., topics.json with 1,000+ topics)
 ├── notebooks/          # Jupyter notebooks for interactive use (Colab optimized)
 ├── src/                # Core source code
-│   └── generator.py    # Main TTSSyntheticDataGenerator class with Gender Detection
+│   └── generator.py    # Main TTSSyntheticDataGenerator class
 ├── examples/           # Sample outputs and metadata
 ├── requirements.txt    # Project dependencies (including torch & transformers)
 └── README.md           # Project documentation
@@ -65,6 +65,7 @@ For an interactive experience, especially on Google Colab:
 
 1. Open `notebooks/TTS_synthetic_data_generation_using_gemeni.ipynb`.
 2. Follow the instructions within the notebook to mount Google Drive and provide your API keys.
+3. The notebook has been cleaned of emojis for a more professional look.
 
 ## 📊 Metadata Format
 
