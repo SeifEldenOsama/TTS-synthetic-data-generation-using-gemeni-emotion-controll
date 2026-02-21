@@ -23,15 +23,29 @@ class TTSSyntheticDataGenerator:
     """
     
     VOICE_MAP = {
-        "Puck": {}, "Leda": {}, "Zephyr": {}, "Kore": {}, "Charon": {},
-        "Aoede": {}, "Gacrux": {}, "Achird": {}, "Sulafat": {}, "Orus": {}
+        "Puck": "male",
+        "Charon": "male",
+        "Orus": "male",
+        "Achird": "male",
+        "Enceladus": "male",
+        "Zephyr": "female",
+        "Leda": "female",
+        "Kore": "female",
+        "Aoede": "female",
+        "Gacrux": "female",
+        "Sulafat": "female",
     }
 
     STYLES = [
-        "cheerful", "gentle", "energetic", "whispering", "authoritative",
-        "playful", "calm", "excited", "sad", "serious", "friendly",
-        "enthusiastic", "soothing", "firm", "formal", "curious",
-        "happy", "angry", "fearful", "neutral"
+        "slow",
+        "cry",
+        "anxious",
+        "kind",
+        "laugh",
+        "bright",
+        "commanding",
+        "mellow",
+        "animated"
     ]
 
     TEMPLATES = [
@@ -64,7 +78,37 @@ class TTSSyntheticDataGenerator:
         "A {gender} speaker delivers knowledge using a {style} teaching tone.",
         "A smooth and {style} explanation spoken by a {gender} voice.",
         "A {style} classroom-style narration from a {gender} educator.",
-        "A direct and {style} explanation presented by a {gender} speaker."
+        "A direct and {style} explanation presented by a {gender} speaker.",
+        "An engaging {style} presentation given by a {gender} instructor.",
+        "A {gender} narrator provides a {style} breakdown of the subject matter.",
+        "The {gender} voice offers a {style} and academic delivery.",
+        "A precise {style} lecture spoken by a {gender} academic.",
+        "In a {style} manner, the {gender} speaker guides the listener through the topic.",
+        "A highly articulate {gender} voice performing a {style} narration.",
+        "The {style} quality of this {gender} speaker is perfect for educational content.",
+        "A {gender} speaker uses an authoritative yet {style} tone.",
+        "This {style} tutorial is narrated by a steady {gender} voice.",
+        "A warm {gender} speaker provides a {style} instructional overview.",
+        "The audio showcases a {gender} voice with a distinct {style} cadence.",
+        "An articulate {style} explanation by a {gender} voice actor.",
+        "A {gender} speaker adopts a {style} persona for this educational clip.",
+        "This {style} delivery is performed by a clear-spoken {gender} individual.",
+        "A {style} and methodical explanation from a {gender} speaker.",
+        "The {gender} educator uses a {style} rhythm throughout the recording.",
+        "A well-paced {style} narration delivered by a {gender} voice.",
+        "A {gender} voice guides the lesson with a {style} and clear approach.",
+        "The recording captures a {gender} speaker in a {style} teaching moment.",
+        "A {style} and expressive {gender} voice recounts the educational material.",
+        "This {gender} speaker provides a consistent {style} flow for learning.",
+        "A balanced {style} tone is used by the {gender} narrator here.",
+        "An insightful {style} explanation spoken by a {gender} specialist.",
+        "The {gender} speaker maintains a {style} presence throughout the audio.",
+        "A clear-cut {style} teaching style from a {gender} professional.",
+        "This {gender} voice sounds both helpful and {style} in its delivery.",
+        "A {style} pedagogical narration by a {gender} speaker.",
+        "The {gender} speaker conveys complex ideas in a {style} tone.",
+        "A rhythmic and {style} explanation given by a {gender} voice.",
+        "This {style} auditory lesson is presented by a {gender} teacher."
     ]
 
     def __init__(self, api_keys: List[str], output_dir: str = "output"):
@@ -97,7 +141,7 @@ class TTSSyntheticDataGenerator:
     def _rotate_key(self):
         self.current_key_index += 1
         if self.current_key_index >= len(self.api_keys):
-            raise RuntimeError("All API keys exhausted or quota reached.")
+            self.current_key_index = 0
         self._initialize_client()
 
     def _predict_gender(self, audio_path: str) -> str:
@@ -123,6 +167,8 @@ class TTSSyntheticDataGenerator:
         style = style or random.choice(self.STYLES)
         template = random.choice(self.TEMPLATES)
         
+        assigned_gender = self.VOICE_MAP[voice_name]
+        
         sample_id = f"teacher_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
         audio_path = os.path.join(self.voice_dir, f"{sample_id}.wav")
         
@@ -136,13 +182,16 @@ class TTSSyntheticDataGenerator:
                 )
                 teacher_text = text_resp.text.strip()
 
-                # 2. Generate audio using TTS
-                # Use a placeholder for gender initially
-                temp_desc = template.format(gender="a", style=style)
+                # 2. Use Mapped Gender for Description
+                final_description = template.format(
+                    gender=assigned_gender,
+                    style=style
+                )
                 
+                # 3. Generate audio using TTS
                 audio_resp = self.client.models.generate_content(
                     model="gemini-2.5-flash-preview-tts",
-                    contents=f"{temp_desc}\n\n{teacher_text}",
+                    contents=f"{final_description}\n\n{teacher_text}",
                     config=types.GenerateContentConfig(
                         response_modalities=["AUDIO"],
                         speech_config=types.SpeechConfig(
@@ -156,9 +205,12 @@ class TTSSyntheticDataGenerator:
                 audio_bytes = audio_resp.candidates[0].content.parts[0].inline_data.data
                 self._save_wav(audio_path, audio_bytes)
 
-                # 3. Predict gender and update description
+                # 4. Predicted gender for clarity check only
                 predicted_gender = self._predict_gender(audio_path)
-                final_description = template.format(gender=predicted_gender, style=style)
+                if assigned_gender != predicted_gender:
+                    logger.warning(f"Clarity: Model predicted {predicted_gender}, but using Map: {assigned_gender}")
+                else:
+                    logger.info(f"Clarity: Model agreed with Map ({assigned_gender})")
 
                 metadata = {
                     "audio_file": f"voices/{sample_id}.wav",
@@ -167,7 +219,7 @@ class TTSSyntheticDataGenerator:
                     "voice_name": voice_name,
                     "style": style,
                     "topic": topic,
-                    "gender": predicted_gender
+                    "gender": assigned_gender
                 }
                 
                 with open(self.metadata_file, "a") as f:
@@ -192,10 +244,10 @@ class TTSSyntheticDataGenerator:
             result = self.generate_sample(topic)
             if result:
                 samples_generated += 1
-                logger.info(f"✅ Saved | Gender Detected: {result['gender']}")
+                logger.info(f"✅ Saved | Gender: {result['gender']} | Style: {result['style']}")
             
             # Rate limiting sleep
-            time.sleep(2)
+            time.sleep(8)
             
         logger.info(f"Successfully generated {samples_generated} samples.")
 
